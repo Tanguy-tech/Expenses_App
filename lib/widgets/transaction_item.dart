@@ -1,6 +1,9 @@
+import 'dart:math';
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:math';
 
 import '../models/transaction.dart';
 
@@ -45,11 +48,18 @@ class _TransactionItemState extends State<TransactionItem> {
       child: ListTile(
         leading: CircleAvatar(
           radius: 30,
-          backgroundColor: _bgColor,
+          backgroundColor: Platform.isIOS
+              ? CupertinoColors.activeBlue
+              : Theme.of(context).primaryColor,
           child: Padding(
             padding: const EdgeInsets.all(6),
             child: FittedBox(
-              child: Text('\$${widget.transaction.amount}'),
+              child: Text(
+                '${widget.transaction.amount}€',
+                style: TextStyle(
+                    color:
+                        Platform.isIOS ? CupertinoColors.white : Colors.white),
+              ),
             ),
           ),
         ),

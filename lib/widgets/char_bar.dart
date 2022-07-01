@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class ChartBar extends StatelessWidget {
   final String label;
@@ -21,14 +24,14 @@ class ChartBar extends StatelessWidget {
             SizedBox(
               height: constraints.maxHeight * 0.15,
               child: FittedBox(
-                child: Text('\$${spendingAmount.toStringAsFixed(0)}'),
+                child: Text('${spendingAmount.toStringAsFixed(0)}€'),
               ),
             ),
             SizedBox(
               height: constraints.maxHeight * 0.05,
             ),
             SizedBox(
-              height: constraints.maxHeight * 0.6,
+              height: constraints.maxHeight * 0.5,
               width: 10,
               child: Stack(
                 children: [
@@ -46,7 +49,9 @@ class ChartBar extends StatelessWidget {
                     heightFactor: spendingPctOfTotal,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        color: Platform.isIOS
+                            ? CupertinoColors.activeGreen
+                            : Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),

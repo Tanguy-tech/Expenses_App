@@ -142,15 +142,23 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     );
   }
 
-  List<Widget> _buildLandscapeContent(
-      MediaQueryData mediaQuery, AppBar appBar, Widget txListWidget) {
+  double _getTotalAmount() {
+    double totalSum = 0.0;
+    for (var i = 0; i < _recentTransactions.length; i++) {
+      totalSum += _recentTransactions[i].amount;
+    }
+    return totalSum;
+  }
+
+  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery,
+      PreferredSizeWidget appBar, Widget txListWidget) {
     return [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             'Show Chart',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.headline6,
           ),
           Switch.adaptive(
             activeColor: Theme.of(context).accentColor,
@@ -168,23 +176,24 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               height: (mediaQuery.size.height -
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
-                  .7,
+                  0.7,
               child: Chart(recentTransactions: _recentTransactions),
             )
           : txListWidget
     ];
   }
 
-  List<Widget> _buildPortraitContent(
-      MediaQueryData mediaQuery, AppBar appBar, Widget txListWidget) {
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,
+      PreferredSizeWidget appBar, Widget txListWidget, Widget displayAmount) {
     return [
       SizedBox(
         height: (mediaQuery.size.height -
                 appBar.preferredSize.height -
                 mediaQuery.padding.top) *
-            .3,
+            0.3,
         child: Chart(recentTransactions: _recentTransactions),
       ),
+      displayAmount,
       txListWidget
     ];
   }
@@ -193,21 +202,25 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: const Text(
-              'Exepenses App',
+              'My Expenses',
+              style: TextStyle(color: CupertinoColors.white),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 GestureDetector(
-                  child: const Icon(CupertinoIcons.add),
+                  child: const Icon(CupertinoIcons.add,
+                      color: CupertinoColors.white),
                   onTap: () => _startAddNewTransaction(context),
                 )
               ],
             ),
+            backgroundColor: CupertinoColors.darkBackgroundGray,
           )
         : AppBar(
             title: const Text(
-              'Exepenses App',
+              'My Expenses',
             ),
             actions: <Widget>[
               IconButton(
@@ -230,6 +243,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
+    final displayAmount = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Total: ${_getTotalAmount()}€ in the last 7 days',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ],
+    );
     final pageBody = SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -247,6 +269,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 mediaQuery,
                 appBar,
                 txListWidget,
+                displayAmount,
               ),
           ],
         ),
